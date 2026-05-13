@@ -75,10 +75,6 @@ export default function Home() {
 
   const [scale, setScale] = useState(1);
 
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  const MAP_SIZE = 900;
-
   const [selectedHero, setSelectedHero] = useState("");
   const [selectedLane, setSelectedLane] = useState("ALL");
 
