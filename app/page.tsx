@@ -63,18 +63,11 @@ function HeroImage({ hero, team }: { hero: string; team: string }) {
 
 export default function Home() {
   /* ================= STATE ================= */
-  const [stageSize, setStageSize] = useState({
-  width: 1700,
-  height: 1100,
-});
-useEffect(() => {
-  if (typeof window === "undefined") return;
+  const BASE_WIDTH = 1700;
+const BASE_HEIGHT = 1100;
 
-  setStageSize({
-    width: window.innerWidth * 0.8,
-    height: window.innerHeight * 0.8,
-  });
-}, []);
+const [zoom, setZoom] = useState(0.8);
+
   const [lines, setLines] = useState<any[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -84,8 +77,6 @@ useEffect(() => {
 
   const [color, setColor] = useState("red");
   const [showColors, setShowColors] = useState(false);
-
-  const [scale, setScale] = useState(1);
 
   const [selectedHero, setSelectedHero] = useState("");
   const [selectedLane, setSelectedLane] = useState("ALL");
@@ -275,46 +266,41 @@ useEffect(() => {
 </div>
 
   {/* 🔲 マップ枠 */}
-  <div
-    style={{
-      width: stageSize.width,
-      height: stageSize.height,
-      border: "2px solid #333",
-      borderRadius: 12,
-      overflow: "hidden",
-      position: "relative",
-      left: 470,
-      top: 50,
-      background: "#6b7280",
-    }}
-  >
+<div
+  style={{
+    width: 1700,
+    height: 1100,
+    border: "2px solid #333",
+    borderRadius: 12,
+    overflow: "hidden",
+    position: "relative",
+    left: 470,
+    top: 50,
+    background: "#6b7280",
+  }}
+>
 
     <Stage
-      width={stageSize.width}
-      height={stageSize.height}
-      draggable={tool === "map"}
-      onWheel={(e) => {
-        e.evt.preventDefault();
+  width={BASE_WIDTH}
+  height={BASE_HEIGHT}
+  draggable={tool === "map"}
+  onWheel={(e) => {
+    e.evt.preventDefault();
 
-        const scaleBy = 1.1;
-        const oldScale = scale;
+    const scaleBy = 1.1;
+    const oldScale = zoom;
 
-        const newScale =
-          e.evt.deltaY > 0
-            ? oldScale / scaleBy
-            : oldScale * scaleBy;
+    const newScale =
+      e.evt.deltaY > 0
+        ? oldScale / scaleBy
+        : oldScale * scaleBy;
 
-        setScale(newScale);
-      }}
-      onMouseDown={handleDown}
-      onMouseMove={handleMove}
-      onMouseUp={() => setIsDrawing(false)}
-    >
-      <Layer scaleX={scale} scaleY={scale}>
-  <MapImage
-  width={stageSize.width}
-  height={stageSize.height}
-/>
+    setZoom(newScale);
+  }}
+>
+      <Layer scaleX={zoom} scaleY={zoom}>
+  <MapImage width={BASE_WIDTH} height={BASE_HEIGHT} />
+
 
   {lines.map((l, i) => (
     <Line
