@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Stage,
   Layer,
@@ -14,7 +14,7 @@ import {
 import useImage from "use-image";
 
 /* ================= MAP ================= */
-function MapImage() {
+function MapImage({ width, height }: { width: number; height: number }) {
   const [image] = useImage("/map.png");
 
   return (
@@ -22,8 +22,8 @@ function MapImage() {
       image={image}
       x={0}
       y={0}
-      width={900}
-      height={900}
+      width={width}
+      height={height}
     />
   );
 }
@@ -63,6 +63,18 @@ function HeroImage({ hero, team }: { hero: string; team: string }) {
 
 export default function Home() {
   /* ================= STATE ================= */
+  const [stageSize, setStageSize] = useState({
+  width: 1700,
+  height: 1100,
+});
+useEffect(() => {
+  if (typeof window === "undefined") return;
+
+  setStageSize({
+    width: window.innerWidth * 0.8,
+    height: window.innerHeight * 0.8,
+  });
+}, []);
   const [lines, setLines] = useState<any[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -265,8 +277,8 @@ export default function Home() {
   {/* 🔲 マップ枠 */}
   <div
     style={{
-      width: 1700,
-      height: 1100,
+      width: stageSize.width,
+      height: stageSize.height,
       border: "2px solid #333",
       borderRadius: 12,
       overflow: "hidden",
@@ -274,14 +286,12 @@ export default function Home() {
       left: 470,
       top: 50,
       background: "#6b7280",
-      transform: "scale(0.8)",
-      transformOrigin: "top center",
     }}
   >
 
     <Stage
-      width={1700}
-      height={1100}
+      width={stageSize.width}
+      height={stageSize.height}
       draggable={tool === "map"}
       onWheel={(e) => {
         e.evt.preventDefault();
@@ -301,7 +311,10 @@ export default function Home() {
       onMouseUp={() => setIsDrawing(false)}
     >
       <Layer scaleX={scale} scaleY={scale}>
-  <MapImage />
+  <MapImage
+  width={stageSize.width}
+  height={stageSize.height}
+/>
 
   {lines.map((l, i) => (
     <Line
