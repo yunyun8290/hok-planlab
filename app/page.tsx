@@ -17,6 +17,8 @@ import useImage from "use-image";
 function MapImage({ width, height }: { width: number; height: number }) {
   const [image] = useImage("/map.png");
 
+  if (!image) return null;
+
   return (
     <KonvaImage
       image={image}
@@ -268,8 +270,8 @@ const [zoom, setZoom] = useState(0.8);
   {/* 🔲 マップ枠 */}
 <div
   style={{
-    width: 1700,
-    height: 1100,
+    width: BASE_WIDTH * zoom,
+    height: BASE_HEIGHT * zoom,
     border: "2px solid #333",
     borderRadius: 12,
     overflow: "hidden",
@@ -283,6 +285,8 @@ const [zoom, setZoom] = useState(0.8);
     <Stage
   width={BASE_WIDTH}
   height={BASE_HEIGHT}
+  scaleX={zoom}
+  scaleY={zoom}
   draggable={tool === "map"}
   onWheel={(e) => {
     e.evt.preventDefault();
@@ -298,7 +302,7 @@ const [zoom, setZoom] = useState(0.8);
     setZoom(newScale);
   }}
 >
-      <Layer scaleX={zoom} scaleY={zoom}>
+      <Layer>
   <MapImage width={BASE_WIDTH} height={BASE_HEIGHT} />
 
 
