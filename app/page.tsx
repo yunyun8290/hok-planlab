@@ -274,6 +274,8 @@ export default function Home() {
       left: 470,
       top: 50,
       background: "#6b7280",
+      transform: "scale(0.8)",
+      transformOrigin: "top center",
     }}
   >
 
