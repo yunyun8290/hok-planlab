@@ -186,7 +186,7 @@ const [pos, setPos] = useState({ x: 0, y: 0 });
 
   /* ================= POINTER ================= */
   const getPos = (e: any) => {
-  const stage = e.target.getStage();
+  const stage = e.currentTarget.getStage();
   if (!stage) return null;
 
   const pointer = stage.getPointerPosition();
@@ -290,8 +290,8 @@ const [pos, setPos] = useState({ x: 0, y: 0 });
     borderRadius: 12,
     overflow: "hidden",
     position: "relative",
-    left: window.innerWidth * 0.2,
-    top: window.innerHeight * 0.05,
+    left: "20vw",
+    top: "5vh",
     background: "#6b7280",
   }}
 >
