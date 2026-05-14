@@ -24,8 +24,8 @@ function MapImage({ width, height }: { width: number; height: number }) {
       image={image}
       x={0}
       y={0}
-      width={width}
-      height={height}
+      width={1000}
+      height={1000}
     />
   );
 }
@@ -66,7 +66,7 @@ function HeroImage({ hero, team }: { hero: string; team: string }) {
 export default function Home() {
   /* ================= STATE ================= */
   const BASE_WIDTH = 1700;
-const BASE_HEIGHT = 1100;
+  const BASE_HEIGHT = 1100;
 
 const [zoom, setZoom] = useState(0.8);
 
@@ -270,8 +270,8 @@ const [zoom, setZoom] = useState(0.8);
   {/* 🔲 マップ枠 */}
 <div
   style={{
-    width: BASE_WIDTH,
-    height: BASE_HEIGHT,
+    width: 1700,
+    height: 1100,
     border: "2px solid #333",
     borderRadius: 12,
     overflow: "hidden",
@@ -283,7 +283,7 @@ const [zoom, setZoom] = useState(0.8);
 >
 
     <Stage
-  width={BASE_WIDTH}
+  width={BASE_WIDTH} 
   height={BASE_HEIGHT}
   scaleX={zoom}
   scaleY={zoom}
@@ -304,7 +304,10 @@ const [zoom, setZoom] = useState(0.8);
 }}
 >
       <Layer>
-  <MapImage width={BASE_WIDTH} height={BASE_HEIGHT} />
+  <MapImage 
+  width={BASE_WIDTH} 
+  height={BASE_HEIGHT}
+   />
 
 
   {lines.map((l, i) => (
