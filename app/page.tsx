@@ -22,10 +22,10 @@ function MapImage({ width, height }: { width: number; height: number }) {
   return (
     <KonvaImage
       image={image}
-      x={0}
-      y={0}
-      width={1000}
-      height={1000}
+      x={400}
+      y={150}
+      width={700}
+      height={700}
     />
   );
 }
@@ -37,7 +37,7 @@ function HeroImage({ hero, team }: { hero: string; team: string }) {
     <Group>
       {/* 外枠 */}
       <Circle
-        radius={24}
+        radius={20}
         stroke={team === "red" ? "#ef4444" : "#3b82f6"}
         strokeWidth={3}
         fill="transparent"
@@ -47,16 +47,16 @@ function HeroImage({ hero, team }: { hero: string; team: string }) {
       <Group
         clipFunc={(ctx: any) => {
           ctx.beginPath();
-          ctx.arc(0, 0, 24, 0, Math.PI * 2);
+          ctx.arc(0, 0, 20, 0, Math.PI * 2);
           ctx.closePath();
         }}
       >
         <KonvaImage
           image={image}
-          width={48}
-          height={48}
-          offsetX={24}
-          offsetY={24}
+          width={40}
+          height={40}
+          offsetX={20}
+          offsetY={20}
         />
       </Group>
     </Group>
@@ -68,7 +68,24 @@ export default function Home() {
   const BASE_WIDTH = 1700;
   const BASE_HEIGHT = 1100;
 
-const [zoom, setZoom] = useState(0.8);
+   const [zoom, setZoom] = useState(1);
+const [pos, setPos] = useState({ x: 0, y: 0 });
+
+
+  useEffect(() => {
+  const updateZoom = () => {
+    const z = Math.min(
+      window.innerWidth / BASE_WIDTH,
+      window.innerHeight / BASE_HEIGHT
+    );
+
+    setZoom(z);
+  };
+
+  updateZoom();
+  window.addEventListener("resize", updateZoom);
+  return () => window.removeEventListener("resize", updateZoom);
+}, []);
 
   const [lines, setLines] = useState<any[]>([]);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -84,17 +101,17 @@ const [zoom, setZoom] = useState(0.8);
   const [selectedLane, setSelectedLane] = useState("ALL");
 
   const [stamps, setStamps] = useState([
-    { id: 1, role: "T", team: "red", hero: "none", x: 200, y: 200 },
-    { id: 2, role: "J", team: "red", hero: "none", x: 300, y: 200 },
-    { id: 3, role: "M", team: "red", hero: "none", x: 400, y: 200 },
-    { id: 4, role: "S", team: "red", hero: "none", x: 500, y: 200 },
-    { id: 5, role: "B", team: "red", hero: "none", x: 600, y: 200 },
+    { id: 1, role: "T", team: "red", hero: "none", x: 550, y: 200 },
+    { id: 2, role: "J", team: "red", hero: "none", x: 750, y: 300 },
+    { id: 3, role: "M", team: "red", hero: "none", x: 820, y: 430 },
+    { id: 4, role: "S", team: "red", hero: "none", x: 1010, y: 650 },
+    { id: 5, role: "B", team: "red", hero: "none", x: 1070, y: 700 },
 
-    { id: 6, role: "T", team: "blue", hero: "none", x: 200, y: 700 },
-    { id: 7, role: "J", team: "blue", hero: "none", x: 300, y: 700 },
-    { id: 8, role: "M", team: "blue", hero: "none", x: 400, y: 700 },
-    { id: 9, role: "S", team: "blue", hero: "none", x: 500, y: 700 },
-    { id: 10, role: "B", team: "blue", hero: "none", x: 600, y: 700 },
+    { id: 6, role: "T", team: "blue", hero: "none", x: 450, y: 300 },
+    { id: 7, role: "J", team: "blue", hero: "none", x: 600, y: 480 },
+    { id: 8, role: "M", team: "blue", hero: "none", x: 700, y: 550 },
+    { id: 9, role: "S", team: "blue", hero: "none", x: 950, y: 750 },
+    { id: 10, role: "B", team: "blue", hero: "none", x: 1000, y: 800 },
   ]);
 
   const handleStampClick = (id: number) => {
@@ -172,16 +189,13 @@ const [zoom, setZoom] = useState(0.8);
   const stage = e.target.getStage();
   if (!stage) return null;
 
-  const point = stage.getPointerPosition();
-  if (!point) return null;
+  const pointer = stage.getPointerPosition();
+  if (!pointer) return null;
 
-  const layer = stage.findOne("Layer");
-  const transform = layer?.getAbsoluteTransform().copy();
-
-  if (!transform) return point;
-
-  transform.invert();
-  return transform.point(point);
+  return {
+    x: (pointer.x - pos.x) / zoom,
+    y: (pointer.y - pos.y) / zoom,
+  };
 };
 
   /* ================= DRAW ================= */
@@ -252,7 +266,7 @@ const [zoom, setZoom] = useState(0.8);
     top: 12,
     right: 16,
     zIndex: 1000,
-    fontSize: 30,
+    fontSize: 20,
     color: "#fff",
     opacity: 0.75,
     fontWeight: 600,
@@ -270,14 +284,14 @@ const [zoom, setZoom] = useState(0.8);
   {/* 🔲 マップ枠 */}
 <div
   style={{
-    width: 1700,
-    height: 1100,
+    width: 1300,
+    height: 850,
     border: "2px solid #333",
     borderRadius: 12,
     overflow: "hidden",
     position: "relative",
-    left: 470,
-    top: 50,
+    left: window.innerWidth * 0.2,
+    top: window.innerHeight * 0.05,
     background: "#6b7280",
   }}
 >
@@ -287,20 +301,38 @@ const [zoom, setZoom] = useState(0.8);
   height={BASE_HEIGHT}
   scaleX={zoom}
   scaleY={zoom}
+  x={pos.x}
+  y={pos.y}
   draggable={tool === "map"}
+  onMouseDown={handleDown}
+  onMouseMove={handleMove}
+  onMouseUp={() => setIsDrawing(false)}
   onWheel={(e) => {
   e.evt.preventDefault();
 
+  const stage = e.currentTarget as any;
+  const pointer = stage.getPointerPosition();
+
+  if (!pointer) return;
+
+  const oldScale = zoom;
   const scaleBy = 1.1;
 
-  setZoom((prev) => {
-  const next =
-    e.evt.deltaY > 0
-      ? prev / scaleBy
-      : prev * scaleBy;
+  const newScale =
+    e.evt.deltaY > 0 ? oldScale / scaleBy : oldScale * scaleBy;
 
-  return Math.min(Math.max(next, 0.5), 2);
-});
+  const mousePointTo = {
+    x: (pointer.x - pos.x) / oldScale,
+    y: (pointer.y - pos.y) / oldScale,
+  };
+
+  const newPos = {
+    x: pointer.x - mousePointTo.x * newScale,
+    y: pointer.y - mousePointTo.y * newScale,
+  };
+
+  setZoom(newScale);
+  setPos(newPos);
 }}
 >
       <Layer>
@@ -342,15 +374,15 @@ const [zoom, setZoom] = useState(0.8);
       }
     >
       <Circle
-        radius={24}
+        radius={20}
         fill={s.team === "red" ? "#ef4444" : "#3b82f6"}
       />
 
       {s.hero === "none" ? (
         <Text
           text={s.role}
-          fontSize={20}
-          fill="white"
+          fontSize={18}
+          fill="black"
           stroke="black"
           strokeWidth={2}
           width={48}
@@ -402,7 +434,7 @@ const [zoom, setZoom] = useState(0.8);
       flexDirection: "column",
       gap: 6,
       background: "#222",
-      padding: 12,
+      padding: 8,
       borderRadius: 12,
     }}
   >
@@ -435,9 +467,9 @@ const [zoom, setZoom] = useState(0.8);
       transform: "translateY(-50%)",
       display: "grid",
       gridTemplateColumns: "repeat(6, 1fr)",
-      gap: 6,
+      gap: 4,
       background: "#222",
-      padding: 12,
+      padding: 8,
       borderRadius: 12,
       zIndex: 50, // ★重要
     }}
@@ -445,8 +477,9 @@ const [zoom, setZoom] = useState(0.8);
     <button
       onClick={() => setSelectedHero("none")}
       style={{
-        width: 50,
-        height: 50,
+        width: 40,
+        height: 40,
+        fontSize: 12,
         border:
           selectedHero === "none"
             ? "2px solid yellow"
@@ -466,8 +499,8 @@ const [zoom, setZoom] = useState(0.8);
           setSelectedHero(hero);
         }}
         style={{
-          width: 50,
-          height: 50,
+          width: 40,
+          height: 40,
           borderRadius: 8,
           border:
             selectedHero === hero
