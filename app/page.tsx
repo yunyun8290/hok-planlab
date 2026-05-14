@@ -270,8 +270,8 @@ const [zoom, setZoom] = useState(0.8);
   {/* 🔲 マップ枠 */}
 <div
   style={{
-    width: BASE_WIDTH * zoom,
-    height: BASE_HEIGHT * zoom,
+    width: BASE_WIDTH,
+    height: BASE_HEIGHT,
     border: "2px solid #333",
     borderRadius: 12,
     overflow: "hidden",
@@ -289,18 +289,19 @@ const [zoom, setZoom] = useState(0.8);
   scaleY={zoom}
   draggable={tool === "map"}
   onWheel={(e) => {
-    e.evt.preventDefault();
+  e.evt.preventDefault();
 
-    const scaleBy = 1.1;
-    const oldScale = zoom;
+  const scaleBy = 1.1;
 
-    const newScale =
-      e.evt.deltaY > 0
-        ? oldScale / scaleBy
-        : oldScale * scaleBy;
+  setZoom((prev) => {
+  const next =
+    e.evt.deltaY > 0
+      ? prev / scaleBy
+      : prev * scaleBy;
 
-    setZoom(newScale);
-  }}
+  return Math.min(Math.max(next, 0.5), 2);
+});
+}}
 >
       <Layer>
   <MapImage width={BASE_WIDTH} height={BASE_HEIGHT} />
