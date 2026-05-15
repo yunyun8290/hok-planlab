@@ -192,10 +192,10 @@ const [pos, setPos] = useState({ x: 0, y: 0 });
   const pointer = stage.getPointerPosition();
   if (!pointer) return null;
 
-  return {
-    x: (pointer.x - pos.x) / zoom,
-    y: (pointer.y - pos.y) / zoom,
-  };
+  const transform = stage.getAbsoluteTransform().copy();
+  transform.invert();
+
+  return transform.point(pointer);
 };
 
   /* ================= DRAW ================= */
